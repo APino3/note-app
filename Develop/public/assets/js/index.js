@@ -1,8 +1,10 @@
-let noteTitle;
+
+// Copy and paste your work, or start typing.let noteTitle;
 let noteText;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
+let numberOfNotes = 0;
 
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
@@ -32,6 +34,7 @@ const getNotes = () =>
       'Content-Type': 'application/json',
     },
   });
+
 
 const saveNote = (note) =>
   fetch('/api/notes', {
@@ -67,14 +70,18 @@ const renderActiveNote = () => {
 };
 
 const handleNoteSave = () => {
+  console.log("here4");
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
+    id:numberOfNotes
   };
-  saveNote(newNote).then(() => {
+  saveNote(newNote).then((res) => {
+    console.log("here1");
     getAndRenderNotes();
+    console.log("here3");
     renderActiveNote();
-  });
+  }, (err) => console.log(err));
 };
 
 // Delete the clicked note
@@ -99,6 +106,7 @@ const handleNoteDelete = (e) => {
 const handleNoteView = (e) => {
   e.preventDefault();
   activeNote = JSON.parse(e.target.parentElement.getAttribute('data-note'));
+  console.log(activeNote);
   renderActiveNote();
 };
 
@@ -119,6 +127,8 @@ const handleRenderSaveBtn = () => {
 // Render the list of note titles
 const renderNoteList = async (notes) => {
   let jsonNotes = await notes.json();
+  numberOfNotes = jsonNotes.length;
+  console.log("here2", jsonNotes);
   if (window.location.pathname === '/notes') {
     noteList.forEach((el) => (el.innerHTML = ''));
   }
@@ -178,6 +188,7 @@ if (window.location.pathname === '/notes') {
   newNoteBtn.addEventListener('click', handleNewNoteView);
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
+  noteList[0].addEventListener('click', handleNoteView);
 }
 
 getAndRenderNotes();
