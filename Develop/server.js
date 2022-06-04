@@ -91,5 +91,5 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, './public', 'notes.html'));
   });
   
-
-app.listen(9000);
+const PORT = process.env.PORT || 9000
+app.listen(PORT);
